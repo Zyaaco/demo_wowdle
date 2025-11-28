@@ -1,0 +1,42 @@
+services:
+  web:
+    # Build the app image using the existing Dockerfile (multi-stage)
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runner
+    image: demo_wowdle:latest
+    container_name: demo_wowdle_web
+    # Do not publish the app directly; expose the container port to the Docker network
+    expose:
+      - "8080"
+    environment:
+      - NODE_ENV=production
+    networks:
+      - webnet
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:2
+    container_name: caddy
+    # Caddy will bind to these host ports and handle TLS automatically
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      # Mount the Caddyfile from the project root (create ./Caddyfile alongside this compose file)
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      # Persistent storage for certificates and config
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - webnet
+    restart: unless-stopped
+
+networks:
+  webnet:
+    driver: bridge
+
+volumes:
+  caddy_data:
+  caddy_config:
