@@ -1,0 +1,29 @@
+services:
+  web:
+    # Build the multi-stage image using the repository's Dockerfile
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runner
+    image: demo_wowdle:latest
+    container_name: demo_wowdle_web
+    # Expose port 80 from the container on port 8080 of the host (adjust if you prefer 80:80)
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+    # Simple healthcheck (uses wget which is available in many lightweight images;
+    # if wget isn't present, remove or adapt this check)
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+# Optionally define networks or volumes here if you need them later
