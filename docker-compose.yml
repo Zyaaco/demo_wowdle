@@ -9,7 +9,7 @@ services:
     container_name: demo_wowdle_web
     # Expose port 80 from the container on port 8080 of the host (adjust if you prefer 80:80)
     ports:
-      - "8080:80"
+      - "5545:80"
     restart: unless-stopped
     environment:
       - NODE_ENV=production
