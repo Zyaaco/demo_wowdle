@@ -1,6 +1,6 @@
 # Multi-stage Dockerfile for building a Vite + React app and serving it with nginx
 # Build stage: use a lightweight Node image to install deps and build the app
-FROM node:20-alpine AS builder
+FROM node:24-alpine AS builder
 
 WORKDIR /app
 

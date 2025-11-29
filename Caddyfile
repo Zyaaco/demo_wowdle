@@ -32,7 +32,7 @@ wowdle.xyz {
     header @static Cache-Control "public, max-age=2592000, immutable"
 
     # Reverse proxy to the application container on the Docker network
-    reverse_proxy demo_wowdle_web:8080 {
+    reverse_proxy demo_wowdle_web:5545 {
         # Forward original Host header (useful if the backend needs it)
         header_up Host {http.request.host}
         header_up X-Real-IP {http.request.remote}
