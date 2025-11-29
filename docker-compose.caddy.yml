@@ -9,7 +9,7 @@ services:
     container_name: demo_wowdle_web
     # Do not publish the app directly; expose the container port to the Docker network
     expose:
-      - "5545"
+      - "80"
     environment:
       - NODE_ENV=production
     networks:
