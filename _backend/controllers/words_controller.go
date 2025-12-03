@@ -72,3 +72,8 @@ func calculateStates(guess, target string) []int {
 
 	return states
 }
+
+func GetValidWords(c *gin.Context) {
+	// Serve valid_words.txt
+	c.File("valid_words.txt")
+}

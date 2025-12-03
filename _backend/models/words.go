@@ -56,3 +56,21 @@ func GetWord() (string, error) {
 
 	return result.Word, nil
 }
+
+func GetValidWords() ([]string, error) {
+	collection := mongoClient.Database(db).Collection(collName)
+
+	filter := bson.M{"_id": singletonID}
+
+	var result word_of_the_day
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	err := collection.FindOne(ctx, filter).Decode(&result)
+	if err != nil {
+		return nil, err
+	}
+
+	return []string{result.Word}, nil
+}
