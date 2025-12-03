@@ -1,29 +1,67 @@
 services:
   web:
-    # Build the multi-stage image using the repository's Dockerfile
+    # Build the app image using the existing Dockerfile (multi-stage)
     build:
       context: .
       dockerfile: Dockerfile
       target: runner
     image: demo_wowdle:latest
     container_name: demo_wowdle_web
-    # Expose port 80 from the container on port 8080 of the host (adjust if you prefer 80:80)
-    ports:
-      - "5545:80"
-    restart: unless-stopped
+    # Do not publish the app directly; expose the container port to the Docker network
+    expose:
+      - "80"
     environment:
       - NODE_ENV=production
-    # Simple healthcheck (uses wget which is available in many lightweight images;
-    # if wget isn't present, remove or adapt this check)
-    healthcheck:
-      test: ["CMD-SHELL", "wget -q --spider http://localhost || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
+    networks:
+      - webnet
+    restart: unless-stopped
 
-# Optionally define networks or volumes here if you need them later
+  backend:
+    build:
+      context: ./_backend
+      dockerfile: Dockerfile
+    container_name: demo_wowdle_backend
+    expose:
+      - "6666"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017
+    networks:
+      - webnet
+    depends_on:
+      - mongo
+    restart: unless-stopped
+
+  mongo:
+    image: mongo:6
+    container_name: mongo
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - webnet
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:2
+    container_name: caddy
+    # Caddy will bind to these host ports and handle TLS automatically
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      # Mount the Caddyfile from the project root (create ./Caddyfile alongside this compose file)
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      # Persistent storage for certificates and config
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - webnet
+    restart: unless-stopped
+
+networks:
+  webnet:
+    driver: bridge
+
+volumes:
+  caddy_data:
+  caddy_config:
+  mongo_data:

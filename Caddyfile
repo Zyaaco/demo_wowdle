@@ -31,6 +31,15 @@ wowdle.xyz, www.wowdle.xyz {
     }
     header @static Cache-Control "public, max-age=2592000, immutable"
 
+    # API routes
+    handle_path /api/* {
+        reverse_proxy backend:6666 {
+            header_up Host {http.request.host}
+            header_up X-Real-IP {http.request.remote}
+            header_up X-Forwarded-For {http.request.header.X-Forwarded-For}
+        }
+    }
+
     # Reverse proxy to the application container on the Docker network (use service name)
     reverse_proxy web:80 {
         # Forward original Host header and client IP info
