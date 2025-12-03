@@ -24,9 +24,7 @@ services:
     expose:
       - "6666"
     environment:
-      - MONGO_URI=mongodb://host.docker.internal:27017
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+      - MONGO_URI=mongodb://mongo:27017
     networks:
       - webnet
     depends_on:
