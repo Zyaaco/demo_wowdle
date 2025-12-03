@@ -11,7 +11,7 @@ func SetupRoutes(router *gin.Engine) {
 	router.GET("/ping", Ping)
 
 	word := router.Group("/word")
-	word.GET("", controllers.CompareWord)
+	word.GET("/", controllers.CompareWord)
 }
 
 func Ping(c *gin.Context) {
@@ -22,6 +22,7 @@ func Ping(c *gin.Context) {
 
 func main() {
 	r := gin.Default()
+	r.RedirectTrailingSlash = false
 
 	models.ConnectDatabase()
 
