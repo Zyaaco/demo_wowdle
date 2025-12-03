@@ -12,7 +12,7 @@ func SetupRoutes(router *gin.Engine) {
 
 	word := router.Group("/word")
 	word.GET("", controllers.CompareWord)
-	word.GET("/valid_words", controllers.GetValidWords)
+	word.GET("valid_words", controllers.GetValidWords)
 }
 
 func Ping(c *gin.Context) {
