@@ -11,8 +11,7 @@ func SetupRoutes(router *gin.Engine) {
 	router.GET("/ping", Ping)
 
 	word := router.Group("/word")
-	word.GET("", controllers.GetWord)
-	word.PUT("", controllers.UpsertWord)
+	word.GET("", controllers.CompareWord)
 }
 
 func Ping(c *gin.Context) {
