@@ -22,7 +22,6 @@ func Ping(c *gin.Context) {
 
 func main() {
 	r := gin.Default()
-	r.RedirectTrailingSlash = false
 
 	models.ConnectDatabase()
 
