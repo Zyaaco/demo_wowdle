@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	_ "embed"
+	"net/http"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -73,7 +75,9 @@ func calculateStates(guess, target string) []int {
 	return states
 }
 
+var validWordsContent string
+
 func GetValidWords(c *gin.Context) {
 	// Serve valid_words.txt
-	c.File("valid_words.txt")
+	c.String(http.StatusOK, validWordsContent)
 }
