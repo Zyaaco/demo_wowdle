@@ -12,8 +12,6 @@ RUN go mod download
 # Copy the source code
 COPY . .
 
-COPY valid_words.txt .
-
 # Build the application
 RUN CGO_ENABLED=0 GOOS=linux go build -p 1 -v -o main .
 
